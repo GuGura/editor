@@ -1,20 +1,34 @@
-import type { Config } from 'tailwindcss'
+import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+      colors: {
+        primary: {
+          DEFAULT: "var(--primary)",
+          weak: "var(--primary-weak)",
+          light: "var(--primary-light)",
+          deep: "var(--primary-deep)",
+        },
+        grayscale: {
+          DEFAULT: "var(--grayscale-gray)",
+          white: "var(--grayscale-white)",
+          pale: "var(--grayscale-pale-gray)",
+          weak: "var(--grayscale-weak-gray)",
+          light: "var(--grayscale-lightgray)",
+          neutral: "var(--grayscale-neutral-gray)",
+          deep: "var(--grayscale-deep-gray)",
+          dark: "var(--grayscale-darkgray)",
+          black: "var(--grayscale-black)",
+        },
+        transparent: "transparent",
       },
     },
   },
   plugins: [],
-}
-export default config
+};
+export default config;
