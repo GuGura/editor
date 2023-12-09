@@ -1,6 +1,5 @@
 "use client";
 import React, { useRef } from "react";
-import { log } from "util";
 
 export default function Editor() {
   const ref = useRef<HTMLDivElement | null>(null);
