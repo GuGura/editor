@@ -1,8 +1,13 @@
 "use client";
-import React from "react";
+import React, { useRef } from "react";
+import { log } from "util";
+
 export default function Editor() {
+  const ref = useRef<HTMLDivElement | null>(null);
+
   return (
     <div
+      ref={ref}
       className={"min-h-[395px]"}
       contentEditable={true}
       spellCheck={true}
@@ -17,9 +22,6 @@ export default function Editor() {
           p.focus();
         }
       }}
-      onInput={(e: React.ChangeEvent<HTMLParagraphElement>) =>
-        e.target.innerText
-      }
     ></div>
   );
 }
