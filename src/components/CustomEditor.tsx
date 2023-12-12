@@ -72,6 +72,24 @@ function CustomEditor() {
     }
   };
 
+  function buttonHandler(tag) {
+    const selection = window.getSelection();
+    if (!selection?.rangeCount) return;
+
+    const range = selection.getRangeAt(0);
+    const selectedText = range.toString();
+    const styledText = `<${tag}>${selectedText}</${tag}>`;
+
+    console.log("range::", range);
+    console.log("selectedText::", selectedText);
+    console.log("styledText::", styledText);
+
+    range.deleteContents();
+    range.insertNode(
+      new DOMParser().parseFromString(styledText, "text/html").body.firstChild,
+    );
+  }
+
   return (
     <div>
       <div
@@ -88,6 +106,7 @@ function CustomEditor() {
           console.log("onInput", e.currentTarget);
         }}
       ></div>
+      <button onClick={() => buttonHandler("strong")}>클릭</button>
       <button onClick={convertToJSON}>Convert to JSON</button>
       <pre>{JSON.stringify(jsonOutput, null, 2)}</pre>
     </div>
