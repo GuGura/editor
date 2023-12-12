@@ -18,7 +18,7 @@ export default function Editor() {
           const p = document.createElement("p");
           p.innerHTML = "<br/>";
           e.target.appendChild(p);
-          p.focus();
+          // p.focus();
         }
       }}
     ></div>

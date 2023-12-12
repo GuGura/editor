@@ -1,8 +1,8 @@
 import Page from "@/components/Layout/Page";
 import { Title } from "@/components/editor/Title";
 import Editor from "@/components/editor/Editor";
-import ContentEditableComponent from "@/components/test";
-import MyContentEditableComponent from "@/components/testr";
+import CustomEditor from "@/components/CustomEditor";
+import ReadOnlyEditor from "@/components/ReadOnlyEditor";
 
 const data = {
   type: "element",
@@ -463,9 +463,12 @@ export default async function page() {
   return (
     <Page className={"block"}>
       <Title />
+      <p>readOnly</p>
+      <ReadOnlyEditor defaultJson={data} />
+      <p>default</p>
       <Editor />
-      <MyContentEditableComponent jsonData={data} />
-      <ContentEditableComponent />
+      <p>custom-editor</p>
+      <CustomEditor />
     </Page>
   );
 }
