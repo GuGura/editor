@@ -2,11 +2,11 @@
 import React, { useEffect, useRef, useState } from "react";
 
 type JsonElement = {
-  type: "element";
-  tag: "div";
-  content?: any;
-  attributes?: { [key: string]: string };
-  children?: JsonElement[];
+  type: "element" | "text";
+  tag: string | undefined;
+  content: string | null;
+  attributes: { [key: string]: string };
+  children: JsonElement[];
 } & HTMLElement;
 
 interface BaseProps {
@@ -79,10 +79,14 @@ function CustomEditor() {
     const range = selection.getRangeAt(0);
     const selectedText = range.toString();
     const styledText = `<${tag}>${selectedText}</${tag}>`;
-
-    console.log("range::", range);
-    console.log("selectedText::", selectedText);
-    console.log("styledText::", styledText);
+    if (
+      editableRef.current &&
+      editableRef.current.contains(range.commonAncestorContainer)
+    ) {
+      console.log("range::", range);
+      console.log("selectedText::", selectedText);
+      console.log("styledText::", styledText);
+    }
 
     range.deleteContents();
     range.insertNode(
@@ -106,7 +110,8 @@ function CustomEditor() {
           console.log("onInput", e.currentTarget);
         }}
       ></div>
-      <button onClick={() => buttonHandler("strong")}>클릭</button>
+      <button onClick={() => buttonHandler("strong")}>클릭 Strong</button>
+      <button onClick={() => buttonHandler("h1")}>클릭 h1</button>
       <button onClick={convertToJSON}>Convert to JSON</button>
       <pre>{JSON.stringify(jsonOutput, null, 2)}</pre>
     </div>
