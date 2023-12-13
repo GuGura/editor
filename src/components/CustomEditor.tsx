@@ -1,21 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
+import { BaseProps, BLOCK_LIST, JsonElement } from "@/constant/editor";
 
-type JsonElement = {
-  type: "element" | "text";
-  tag: string | undefined;
-  content: string | null;
-  attributes: { [key: string]: string };
-  children: JsonElement[];
-} & HTMLElement;
-
-interface BaseProps {
-  type: "element" | "text";
-  tag: string | undefined;
-  content: string | null;
-  attributes: { [key: string]: string };
-  children: BaseProps[];
-}
 function CustomEditor() {
   const editableRef = useRef<JsonElement>(null);
   const [jsonOutput, setJsonOutput] = useState({});
@@ -72,21 +58,46 @@ function CustomEditor() {
     }
   };
 
-  function buttonHandler(tag) {
+  function buttonHandler(tag: string) {
     const selection = window.getSelection();
     if (!selection?.rangeCount) return;
 
     const range = selection.getRangeAt(0);
-    const selectedText = range.toString();
-    const styledText = `<${tag}>${selectedText}</${tag}>`;
-    if (
-      editableRef.current &&
-      editableRef.current.contains(range.commonAncestorContainer)
-    ) {
-      console.log("range::", range);
-      console.log("selectedText::", selectedText);
-      console.log("styledText::", styledText);
+    const current = editableRef.current;
+    if (!(current && current.contains(range.commonAncestorContainer))) {
+      return;
     }
+    const selectedText = range.toString();
+    let container = range.commonAncestorContainer;
+    if (container.nodeType !== Node.ELEMENT_NODE) {
+      container = container.parentNode;
+      console.log("container::", container);
+      console.log(
+        "container.nodeType !== Node.ELEMENT_NODE::",
+        container.nodeType,
+      );
+    }
+    if (container instanceof Element) {
+      const containerTag = container.tagName.toLowerCase();
+      console.log("containerTag::", containerTag);
+    }
+    if (BLOCK_LIST.includes(tag.toLowerCase())) {
+    } else {
+    }
+
+    const styledText = `<${tag}>${selectedText}</${tag}>`;
+
+    console.log("range::", range);
+    console.log(
+      "commonAncestorContainer::",
+      range.commonAncestorContainer.nodeType,
+    );
+    console.log(
+      "commonAncestorContainer::",
+      range?.commonAncestorContainer["tagName"],
+    );
+    console.log("selectedText::", selectedText);
+    console.log("styledText::", styledText);
 
     range.deleteContents();
     range.insertNode(

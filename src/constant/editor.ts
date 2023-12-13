@@ -1,11 +1,18 @@
 export const BaseProps = {};
-interface BaseProps {
+export interface Base {
   type: "element" | "text";
-  tag: string;
+  tag: string | undefined;
   content: string | null;
-  attributes?: { [key: string]: string };
-  children: [];
+  attributes: { [key: string]: string };
 }
+export type JsonElement = {
+  children: JsonElement[];
+} & Base &
+  HTMLElement;
+
+export type BaseProps = {
+  children: BaseProps[];
+} & Base;
 
 const Tags = [];
 
@@ -25,13 +32,14 @@ export const MARK_LIST = [
   MARK_CODE,
 ];
 
-export const BLOCK_QUOTE_ONE = `block-quote1`;
-export const BLOCK_QUOTE_TWO = `block-quote2`;
-export const BLOCK_PARAGRAPH = `block-paragraph`;
-export const BLOCK_HEADING_ONE = `block-heading1`;
-export const BLOCK_HEADING_TWO = `block-heading2`;
-export const BLOCK_HEADING_THREE = `block-heading3`;
-export const BLOCK_CODE = `block-code`;
+export const BLOCK_QUOTE_ONE = `blockquote1`;
+export const BLOCK_QUOTE_TWO = `blockquote2`;
+export const BLOCK_PARAGRAPH = `p`;
+export const BLOCK_NORMAL = `div`;
+export const BLOCK_HEADING_ONE = `h1`;
+export const BLOCK_HEADING_TWO = `h2`;
+export const BLOCK_HEADING_THREE = `h3`;
+export const BLOCK_CODE = `pre`;
 
 export const BLOCK_LIST = [
   BLOCK_QUOTE_ONE,
@@ -41,6 +49,7 @@ export const BLOCK_LIST = [
   BLOCK_HEADING_TWO,
   BLOCK_HEADING_THREE,
   BLOCK_CODE,
+  BLOCK_NORMAL,
 ];
 export const BULLETED_LIST = `bulleted-list`;
 export const NUMBER_LIST = `number-list`;
