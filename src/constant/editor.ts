@@ -23,6 +23,14 @@ export const MARK_ITALIC = `mark-italic`;
 export const MARK_UNDERLINE = `mark-underline`;
 export const MARK_CODE = `mark-code`;
 
+/*
+  mark-bold |
+  mark-normal |
+  mark-link |
+  mark-italic |
+  mark-underline |
+  mark-code |
+ */
 export const MARK_LIST = [
   MARK_BOLD,
   MARK_NORMAL,

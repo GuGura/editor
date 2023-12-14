@@ -4,7 +4,12 @@ import {
   BLOCK_LIST,
   JsonElement,
   MARK_BOLD,
+  MARK_CODE,
+  MARK_ITALIC,
+  MARK_LINK,
   MARK_LIST,
+  MARK_NORMAL,
+  MARK_UNDERLINE,
 } from "@/constant/editor";
 import useConvertToJSON from "@/hook/useConvertToJSON";
 
@@ -43,10 +48,46 @@ function CustomEditor() {
       return;
     }
     if (MARK_LIST.includes(tag)) {
-      if (tag === MARK_BOLD) tag = "strong";
-      let container = range.commonAncestorContainer;
+      let style;
       const selectedText = range.toString();
-      const styledText = `<${tag}>${selectedText}</${tag}>`;
+      let container: ParentNode | null =
+        range.commonAncestorContainer as Element;
+      if (container.nodeType === Node.TEXT_NODE) {
+        container = container.parentNode;
+      }
+
+      const computedStyle = window.getComputedStyle(container);
+      console.log(computedStyle);
+
+      const isBold = computedStyle.fontWeight === "700";
+
+      let styledText;
+      switch (tag) {
+        case MARK_BOLD:
+          if (isBold) {
+            styledText = selectedText;
+          } else
+            styledText = `<span style='font-weight:700'>${selectedText}<span/>`;
+          break;
+        case MARK_NORMAL:
+          break;
+        case MARK_LINK:
+          break;
+        case MARK_ITALIC:
+          break;
+        case MARK_UNDERLINE:
+          break;
+        case MARK_CODE:
+          break;
+      }
+      if (tag === MARK_BOLD) tag = "strong";
+      // mark-bold
+      // mark-code
+      // mark-underlined
+      // mark-link
+      // mark-italic
+
+      // const styledText = `<${tag}>${selectedText}</${tag}>`;
       console.log("range::", range);
       range.deleteContents();
       console.log("cloneContents::", range.cloneContents());
