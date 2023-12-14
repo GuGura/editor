@@ -463,10 +463,10 @@ export default async function page() {
   return (
     <Page className={"block"}>
       <Title />
-      <p>readOnly</p>
-      <ReadOnlyEditor defaultJson={data} />
       <p>default</p>
       <Editor />
+      <p>readOnly</p>
+      <ReadOnlyEditor defaultJson={data} />
       <p>custom-editor</p>
       <CustomEditor />
     </Page>
