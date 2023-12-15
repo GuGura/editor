@@ -48,14 +48,18 @@ function CustomEditor() {
       return;
     }
     if (MARK_LIST.includes(tag)) {
+      // 1. 현재 커서가 있는 위치의 부모 태그를 찾는다.
+      // 2. 현재 선택한 텍스트를 감싸는 태그를 찾는다.
       let style;
       const selectedText = range.toString();
       let container: ParentNode | null =
         range.commonAncestorContainer as Element;
       if (container.nodeType === Node.TEXT_NODE) {
+        console.log("if container.nodeType === Node.TEXT_NODE");
         container = container.parentNode;
       }
-
+      console.log("else container.nodeType === Node.TEXT_NODE");
+      console.log("container::", container);
       const computedStyle = window.getComputedStyle(container);
       console.log(computedStyle);
 
@@ -67,7 +71,7 @@ function CustomEditor() {
           if (isBold) {
             styledText = selectedText;
           } else
-            styledText = `<span style='font-weight:700'>${selectedText}<span/>`;
+            styledText = `<span style='font-weight:700'>${selectedText}</span>`;
           break;
         case MARK_NORMAL:
           break;
@@ -98,43 +102,43 @@ function CustomEditor() {
         range.insertNode(domParser);
       }
     }
-    // const selectedText = range.toString();
-    // let container = range.commonAncestorContainer;
-    // if (container.nodeType !== Node.ELEMENT_NODE) {
-    //   container = container.parentNode;
-    //   console.log("container::", container);
-    //   console.log(
-    //     "container.nodeType !== Node.ELEMENT_NODE::",
-    //     container.nodeType,
-    //   );
-    // }
-    // if (container instanceof Element) {
-    //   const containerTag = container.tagName.toLowerCase();
-    //   console.log("containerTag::", containerTag);
-    // }
-    // if (BLOCK_LIST.includes(tag.toLowerCase())) {
-    // } else {
-    // }
-    //
-    // const styledText = `<${tag}>${selectedText}</${tag}>`;
-    //
-    // console.log("range::", range);
-    // console.log(
-    //   "commonAncestorContainer::",
-    //   range.commonAncestorContainer.nodeType,
-    // );
-    // console.log(
-    //   "commonAncestorContainer::",
-    //   range?.commonAncestorContainer["tagName"],
-    // );
-    // console.log("selectedText::", selectedText);
-    // console.log("styledText::", styledText);
-    //
-    // range.deleteContents();
-    // range.insertNode(
-    //   new DOMParser().parseFromString(styledText, "text/html").body.firstChild,
-    // );
   }
+  // const selectedText = range.toString();
+  // let container = range.commonAncestorContainer;
+  // if (container.nodeType !== Node.ELEMENT_NODE) {
+  //   container = container.parentNode;
+  //   console.log("container::", container);
+  //   console.log(
+  //     "container.nodeType !== Node.ELEMENT_NODE::",
+  //     container.nodeType,
+  //   );
+  // }
+  // if (container instanceof Element) {
+  //   const containerTag = container.tagName.toLowerCase();
+  //   console.log("containerTag::", containerTag);
+  // }
+  // if (BLOCK_LIST.includes(tag.toLowerCase())) {
+  // } else {
+  // }
+  //
+  // const styledText = `<${tag}>${selectedText}</${tag}>`;
+  //
+  // console.log("range::", range);
+  // console.log(
+  //   "commonAncestorContainer::",
+  //   range.commonAncestorContainer.nodeType,
+  // );
+  // console.log(
+  //   "commonAncestorContainer::",
+  //   range?.commonAncestorContainer["tagName"],
+  // );
+  // console.log("selectedText::", selectedText);
+  // console.log("styledText::", styledText);
+  //
+  // range.deleteContents();
+  // range.insertNode(
+  //   new DOMParser().parseFromString(styledText, "text/html").body.firstChild,
+  // );
 
   return (
     <div>
