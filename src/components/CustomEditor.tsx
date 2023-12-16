@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   BLOCK_LIST,
   JsonElement,
@@ -15,6 +15,7 @@ import useConvertToJSON from "@/hook/useConvertToJSON";
 
 function CustomEditor() {
   const editableRef = useRef<JsonElement>(null);
+  const [log, setLog] = useState("");
   const { convertToJSON, jsonOutput } = useConvertToJSON(editableRef);
 
   useEffect(() => {
@@ -37,12 +38,29 @@ function CustomEditor() {
       return;
     }
   }
+  function findParentNode(selection: Selection) {
+    let isParentNode = false;
+    let container: Node | ParentNode | null =
+      selection.getRangeAt(0).startContainer;
 
+    // 텍스트 노드인 경우, 부모 요소를 찾는다.
+    if (container.nodeType === Node.TEXT_NODE) {
+      container = container.parentNode;
+      isParentNode = true;
+    }
+
+    return { container, isParentNode }; // 이것이 부모 노드입니다.
+  }
   function markHandler(tag: string) {
+    let log = "";
     const selection = window.getSelection();
     if (!selection?.rangeCount) return;
 
+    const { container: parentContainer, isParentNode } =
+      findParentNode(selection);
+
     const range = selection.getRangeAt(0);
+    log += `0. range: ${range}\n`;
     const current = editableRef.current;
     if (!(current && current.contains(range.commonAncestorContainer))) {
       return;
@@ -52,26 +70,36 @@ function CustomEditor() {
       // 2. 현재 선택한 텍스트를 감싸는 태그를 찾는다.
       let style;
       const selectedText = range.toString();
+      log += `1. selectedText: ${selectedText}\n`;
+
       let container: ParentNode | null =
         range.commonAncestorContainer as Element;
+      log += `2. container: ${!!container}\n`;
+
       if (container.nodeType === Node.TEXT_NODE) {
-        console.log("if container.nodeType === Node.TEXT_NODE");
+        log += `3. container.nodeType: ${container.nodeType}\n`;
         container = container.parentNode;
       }
-      console.log("else container.nodeType === Node.TEXT_NODE");
-      console.log("container::", container);
+
+      log += `4. container.nodeType === Node.TEXT_NODE (${container})\n`;
+
       const computedStyle = window.getComputedStyle(container);
-      console.log(computedStyle);
 
       const isBold = computedStyle.fontWeight === "700";
-
-      let styledText;
+      if (container instanceof Element) {
+        const containerTag = container.tagName.toLowerCase();
+        log += `5.containerTag: ${containerTag}`;
+      }
+      let nodeElement;
       switch (tag) {
         case MARK_BOLD:
           if (isBold) {
-            styledText = selectedText;
-          } else
-            styledText = `<span style='font-weight:700'>${selectedText}</span>`;
+            nodeElement = document.createTextNode(selectedText);
+          } else {
+            nodeElement = document.createElement("span");
+            nodeElement.innerHTML = selectedText;
+            nodeElement.style.fontWeight = "700";
+          }
           break;
         case MARK_NORMAL:
           break;
@@ -84,7 +112,6 @@ function CustomEditor() {
         case MARK_CODE:
           break;
       }
-      if (tag === MARK_BOLD) tag = "strong";
       // mark-bold
       // mark-code
       // mark-underlined
@@ -96,23 +123,18 @@ function CustomEditor() {
       range.deleteContents();
       console.log("cloneContents::", range.cloneContents());
       console.log("range::", range);
-      const domParser = new DOMParser().parseFromString(styledText, "text/html")
-        .body.firstChild;
-      if (domParser) {
-        range.insertNode(domParser);
+      if (!!nodeElement) {
+        range.insertNode(nodeElement);
       }
+      // const domParser = new DOMParser().parseFromString(styledText, "text/html")
+      //   .body.firstChild;
+      // if (domParser) {
+      //   range.insertNode(domParser);
+      // }
+      setLog(log);
     }
   }
-  // const selectedText = range.toString();
-  // let container = range.commonAncestorContainer;
-  // if (container.nodeType !== Node.ELEMENT_NODE) {
-  //   container = container.parentNode;
-  //   console.log("container::", container);
-  //   console.log(
-  //     "container.nodeType !== Node.ELEMENT_NODE::",
-  //     container.nodeType,
-  //   );
-  // }
+
   // if (container instanceof Element) {
   //   const containerTag = container.tagName.toLowerCase();
   //   console.log("containerTag::", containerTag);
@@ -142,6 +164,9 @@ function CustomEditor() {
 
   return (
     <div>
+      <div className={"flex flex-col whitespace-pre-wrap bg-gray-200"}>
+        {log}
+      </div>
       <div
         ref={editableRef as any}
         spellCheck={true}
@@ -151,9 +176,6 @@ function CustomEditor() {
           border: "1px solid black",
           minHeight: "100px",
           padding: "10px",
-        }}
-        onInput={(e) => {
-          console.log("onInput", e.currentTarget);
         }}
       ></div>
       <button onClick={() => markHandler(MARK_BOLD)}>클릭 Strong</button>
